@@ -1,0 +1,109 @@
+﻿<Window x:Class="Diar_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:Diar_WPF"
+        mc:Ignorable="d"
+        Title="Diář" Height="450" Width="800" WindowStartupLocation="CenterScreen" 
+        Icon="/diary_journal_icon.ico">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Dnes je: "/>
+                <TextBlock Text="{Binding ActualDate}"/>
+            </StackPanel>
+
+        </Grid>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+            <TextBlock Text="Týden: "/>
+            <TextBlock Text="{Binding DateWeek}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0 2 0 2">
+                <Button Name="AddButtonWindow" Content="Přidat událost" Width="100" Height="25"
+                        Click="AddButtonWindow_Click" Style="{StaticResource AddButtonWindow}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0 2 0 2"
+                        HorizontalAlignment="Right">
+                <Button Margin="0 0 2 0" Style="{StaticResource SearchButton}" 
+                        Width="30" Click="RefreshButtonClick">
+                    <Image Source="/Images/refresh_icon.png" />
+                </Button>
+                <TextBox Width="150" Margin="0 0 5 0" Name="SearchBox" Padding="0 2 0 0"/>
+                <Button Name="SearchButton" Content="Vyhledat" Click="SearchButton_Click"
+                        Style="{StaticResource SearchButton}" IsDefault="True"/>
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0">
+            <DataGrid Name="DataGridRecord" ItemsSource="{Binding ActualDiaryEvents}"
+                      AutoGenerateColumns="False" IsReadOnly="True" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="2*" Header="Datum"  Binding="{Binding DateOfEvent, StringFormat=dd.MM.yyyy}"/>
+                    <DataGridTextColumn Width="2*" Header="Název" Binding="{Binding Name}" />
+                    <DataGridTextColumn Width="7*" Header="Popis události" Binding="{Binding EventText}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+
+        <StackPanel Grid.Column="1" Grid.Row="3" Grid.RowSpan="2" Margin="10, 0, 0, 0" 
+                     DataContext="{Binding ElementName=DataGridRecord,Path=SelectedItem}">
+
+            <StackPanel Orientation="Horizontal" Grid.RowSpan="2"
+                    VerticalAlignment="Bottom" Height="20" Margin="0 4 0 0">
+                <TextBlock  Text="Vybraná událost: " FontWeight="Bold"/>
+                <TextBlock Text="{Binding Name}"/>
+            </StackPanel>
+
+            <Calendar Margin="0 10 0 0" Grid.Row="3" Grid.Column="1" SelectedDate="{Binding DateOfEvent, Mode=OneTime}"
+                     DisplayDate="{Binding DateOfEvent, Mode=OneTime}"
+                      Name="RecordCalendar"/>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center" Grid.Row="4" Grid.Column="1">
+            <Button Name="EditButonWinow" Content="Editovat" Click="EditButonWinow_Click"
+                    Width="100" Margin="2 0" Height="25" Style="{StaticResource EditButonWinow}"/>
+            <Button Name="DeleteButtonRecord"  Content="Odstranit" Click="DeleteButtonRecord_Click"
+                    Width="100" Margin="2 0" Height="25" Style="{StaticResource RemoveButton}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+            <TextBlock Text="Nejbližší událost: "/>
+            <TextBlock Text="{Binding NearestRecord.DateOfEvent,StringFormat=dd.MM.yyy}"/>
+            <TextBlock Text=" - "/>
+            <TextBlock Text="{Binding NearestRecord.Name}"/>
+        </StackPanel>
+    </Grid>
+</Window>
